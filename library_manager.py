@@ -17,23 +17,30 @@ books={
 issue_records=["A101","B101","A101"]
 
 issued_book_ids=set(issue_records)
-print(books["A101"][2])
-
 
 
 # Calculating available copies 
 
 book_id = "B101"
 
-total = books[book_id][2]
-issued = issue_records.count(book_id)
-available = total - issued
+# total = books[book_id][2]
+# issued = issue_records.count(book_id)
+# available = total - issued
 
-print("Book:", books[book_id][0])
-print("Total Copies:", total)
-print("Issued Copies:", issued)
-print("Available Copies:", available)
+# print("Book:", books[book_id][0])
+# print("Total Copies:", total)
+# print("Issued Copies:", issued)
+# print("Available Copies:", available)
 
 #showing the issued books
 
-print("Currently issued books :", issued_book_ids)
+# print("Currently issued books :", issued_book_ids)
+
+def calculate_available(book_id):
+    total=books[book_id][2]
+    issued=issue_records.count(book_id)
+    available=total-issued
+    return available
+
+results=calculate_available("A101")
+print("Available copies : " ,results)
