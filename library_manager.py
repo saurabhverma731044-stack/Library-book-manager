@@ -103,3 +103,84 @@ def add_book():
 
     return True
 
+
+
+
+# FEATURE 2: ISSUE A BOOK
+# This function allows the librarian to issue a book.
+# It checks availability before issuing the book.
+
+def issue_book():
+
+    print("\n----- ISSUE A BOOK -----")
+
+    # Taking the Book ID from the user.
+    book_id = input("Enter Book ID to issue: ").strip().upper()
+
+    # Step 1: Check whether the Book ID exists.
+    if book_id not in books:
+        print("Book ID does not exist!")
+        return False
+
+    # Step 2: Calculate how many copies are available.
+    available = calculate_available(book_id)
+
+    # Step 3: Stop if no copies are available.
+    if available <= 0:
+        print("Sorry! No copies are currently available.")
+        return False
+
+    # Step 4: Add the issued book ID to the list.
+    # A list allows duplicate IDs because multiple copies
+    # of the same book can be issued.
+    issue_records.append(book_id)
+
+    # Step 5: Add the ID to the set.
+    # A set stores each issued Book ID only once.
+    issued_book_ids.add(book_id)
+
+    print("\nBook issued successfully!")
+    print("Book Title:", books[book_id][0])
+    print("Issued Copies:", calculate_issued(book_id))
+    print("Available Copies:", calculate_available(book_id))
+
+    return True
+
+
+
+
+# FEATURE 3: RETURN A BOOK
+# This function allows the librarian to accept a returned book.
+
+def return_book():
+
+    print("\n----- RETURN A BOOK -----")
+
+    # Taking the Book ID from the user.
+    book_id = input("Enter Book ID to return: ").strip().upper()
+
+    # Step 1: Check whether the Book ID exists.
+    if book_id not in books:
+        print("Book ID does not exist!")
+        return False
+
+    # Step 2: Check whether any copy of this book is issued.
+    if book_id not in issue_records:
+        print("No issued copy of this book was found!")
+        return False
+
+    # Step 3: Remove only ONE occurrence from the list.
+    # If A101 appears twice, one return leaves one A101.
+    issue_records.remove(book_id)
+
+    # Step 4: Update the set.
+    # Remove the ID only when no copies remain issued.
+    if book_id not in issue_records:
+        issued_book_ids.remove(book_id)
+
+    print("\nBook returned successfully!")
+    print("Book Title:", books[book_id][0])
+    print("Remaining Issued Copies:", calculate_issued(book_id))
+    print("Available Copies:", calculate_available(book_id))
+
+    return True
