@@ -184,3 +184,54 @@ def return_book():
     print("Available Copies:", calculate_available(book_id))
 
     return True
+
+
+    
+# FEATURE 4: SEARCH BOOKS
+# This function searches books using their title or author name.
+# It also supports partial searches.
+
+def search_book():
+
+    print("\n----- SEARCH BOOKS -----")
+
+    # Taking the search keyword from the user.
+    keyword = input("Enter Book Title or Author Name: ").strip().lower()
+
+    # Checking whether the user entered something.
+    if keyword == "":
+        print("Search keyword cannot be empty!")
+        return []
+
+    # This list will store all matching books.
+    results = []
+
+    # Traversing through the complete books dictionary.
+    for book_id, details in books.items():
+
+        # Extracting title and author from the tuple.
+        title = details[0]
+        author = details[1]
+
+        # Checking whether keyword exists in title or author.
+        if keyword in title.lower() or keyword in author.lower():
+
+            # Storing matching book details.
+            results.append((book_id, details))
+
+    # Displaying the search results.
+    if len(results) == 0:
+        print("No matching books found!")
+
+    else:
+        print("\nMatching Books:")
+        print("-" * 65)
+        print(f"{'Book ID':<12}{'Title':<25}{'Author':<20}{'Copies':<8}")
+        print("-" * 65)
+
+        for book_id, details in results:
+            print(f"{book_id:<12}{details[0]:<25}{details[1]:<20}{details[2]:<8}")
+
+        print("-" * 65)
+
+    return results
