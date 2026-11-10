@@ -36,18 +36,39 @@ book_id = "B101"
 
 # print("Currently issued books :", issued_book_ids)
 
+
 def calculate_available(book_id):
-    total=books[book_id][2]
-    issued=issue_records.count(book_id)
-    available=total-issued
+    """
+    Calculate the number of available copies of a book.
+
+    >>> calculate_available("A101")
+    3
+    >>> calculate_available("B101")
+    9
+    """
+
+    total = books[book_id][2]
+    issued = issue_records.count(book_id)
+    available = total - issued
+
     return available
 
-results=calculate_available("A101")
-print("Available copies : " ,results)
+
 
 def calculate_issued(book_id):
-    issued=issue_records.count(book_id)
+    """
+    Calculate how many copies of a book are issued.
+
+    >>> calculate_issued("A101")
+    2
+    >>> calculate_issued("B101")
+    1
+    """
+
+    issued = issue_records.count(book_id)
+
     return issued
+
 
 
 
@@ -298,34 +319,30 @@ def display_catalogue():
 # This function calculates the total number of physical copies
 # available in the library using recursion.
 
-def calculate_total_copies(book_ids=None):
 
-    # Convert dictionary keys into a list.
+def calculate_total_copies(book_ids=None):
+    """
+    Calculate total library copies using recursion.
+
+    >>> calculate_total_copies()
+    29
+    >>> calculate_total_copies([])
+    0
+    """
+
     if book_ids is None:
         book_ids = list(books.keys())
 
-    # BASE CASE:
-    # If no book IDs are left, return 0.
-    # This condition stops the recursion.
     if len(book_ids) == 0:
         return 0
 
-    # Take the first Book ID from the list.
     book_id = book_ids[0]
-
-    # Get the total copies of that book.
     copies = books[book_id][2]
 
-    # RECURSIVE CASE:
-    # Calculate copies of the remaining books.
     remaining_copies = calculate_total_copies(book_ids[1:])
 
-    # Add current book copies to remaining copies.
     return copies + remaining_copies
-# TEMPORARY TESTING
-total = calculate_total_copies()
 
-print("\nTotal Copies in Library:", total)
 
 
 
