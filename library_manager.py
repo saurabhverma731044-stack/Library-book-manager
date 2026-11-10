@@ -235,3 +235,58 @@ def search_book():
         print("-" * 65)
 
     return results
+
+
+
+
+# FEATURE 5: DISPLAY COMPLETE LIBRARY CATALOGUE
+# This function displays all books grouped by their authors.
+# It uses nested loops to display books author-wise.
+
+def display_catalogue():
+
+    print("\n========== LIBRARY CATALOGUE ==========")
+
+    # Step 1: Get all unique author names.
+    # A set automatically removes duplicate author names.
+    authors = set()
+
+    for details in books.values():
+        authors.add(details[1])
+
+    # Step 2: Sort author names alphabetically.
+    sorted_authors = sorted(authors)
+
+    # Step 3: Check whether the library is empty.
+    if len(books) == 0:
+        print("No books available in the library!")
+        return
+
+    # Step 4: Outer loop selects one author at a time.
+    for author in sorted_authors:
+
+        print("\nAuthor:", author)
+        print("-" * 75)
+
+        # Displaying table headings.
+        print(f"{'Book ID':<12}{'Book Title':<30}{'Total':<10}{'Issued':<10}{'Available':<10}")
+        print("-" * 75)
+
+        # Inner loop checks every book for the selected author.
+        for book_id, details in books.items():
+
+            title = details[0]
+            book_author = details[1]
+            total = details[2]
+
+            # Display only books belonging to the selected author.
+            if book_author == author:
+
+                issued = calculate_issued(book_id)
+                available = calculate_available(book_id)
+
+                print(f"{book_id:<12}{title:<30}{total:<10}{issued:<10}{available:<10}")
+
+        print("-" * 75)
+
+    return True
