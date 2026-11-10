@@ -328,3 +328,143 @@ total = calculate_total_copies()
 print("\nTotal Copies in Library:", total)
 
 
+
+# FEATURE 7A: SAVE LIBRARY DATA
+# This function saves books and issue records
+# permanently into library_data.txt.
+
+def save_data():
+
+    try:
+        # Open the text file in write mode.
+        # "w" creates the file if it does not exist.
+        # If it exists, old content is replaced.
+        with open("library_data.txt", "w", encoding="utf-8") as file:
+
+            # First section: Save all book details.
+            file.write("BOOKS\n")
+
+            for book_id, details in books.items():
+
+                title = details[0]
+                author = details[1]
+                copies = details[2]
+
+                # Store each book in one line.
+                file.write(f"{book_id}|{title}|{author}|{copies}\n")
+
+            # Second section: Save issued book records.
+            file.write("ISSUED\n")
+
+            for book_id in issue_records:
+                file.write(book_id + "\n")
+
+        print("Library data saved successfully!")
+        return True
+
+    except OSError:
+        print("Error! Unable to save library data.")
+        return False
+
+
+
+# FEATURE 7B: LOAD LIBRARY DATA
+# This function reads saved information from library_data.txt
+# and restores the original data structures.
+
+def load_data():
+
+    # Temporary containers to store the loaded information.
+    loaded_books = {}
+    loaded_issue_records = []
+
+    try:
+        # Open the file in read mode.
+        with open("library_data.txt", "r", encoding="utf-8") as file:
+
+            section = ""
+
+            # Read the file one line at a time.
+            for line in file:
+
+                line = line.strip()
+
+                # Skip empty lines.
+                if line == "":
+                    continue
+
+                # Identify the BOOKS section.
+                if line == "BOOKS":
+                    section = "books"
+                    continue
+
+                # Identify the ISSUED section.
+                if line == "ISSUED":
+                    section = "issued"
+                    continue
+
+                # Load book details.
+                if section == "books":
+
+                    details = line.split("|")
+
+                    if len(details) != 4:
+                        raise ValueError("Invalid book record in file.")
+
+                    book_id = details[0]
+                    title = details[1]
+                    author = details[2]
+                    copies = int(details[3])
+
+                    if book_id in loaded_books or copies <= 0:
+                        raise ValueError("Invalid book information in file.")
+
+                    loaded_books[book_id] = (title, author, copies)
+
+                # Load issued book IDs.
+                elif section == "issued":
+
+                    if line not in loaded_books:
+                        raise ValueError("Invalid issued Book ID in file.")
+
+                    loaded_issue_records.append(line)
+
+                else:
+                    raise ValueError("Invalid file format.")
+
+        # Check that issued copies do not exceed total copies.
+        for book_id in loaded_books:
+            if loaded_issue_records.count(book_id) > loaded_books[book_id][2]:
+                raise ValueError("Issued copies exceed total copies.")
+
+        # Replace existing data with the loaded data.
+        books.clear()
+        books.update(loaded_books)
+
+        issue_records.clear()
+        issue_records.extend(loaded_issue_records)
+
+        # Rebuild the set from the updated issue records.
+        issued_book_ids.clear()
+        issued_book_ids.update(issue_records)
+
+        print("Library data loaded successfully!")
+        return True
+
+    except FileNotFoundError:
+        print("Data file not found! Starting with default books.")
+        return False
+
+    except (ValueError, OSError):
+        print("Error! Library data file is invalid or cannot be read.")
+        return False
+
+
+print("Testing save function...")
+
+result = save_data()
+
+print("Save function result:", result)
+
+
+
