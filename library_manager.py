@@ -290,3 +290,41 @@ def display_catalogue():
         print("-" * 75)
 
     return True
+
+
+
+
+# FEATURE 6: CALCULATE TOTAL COPIES USING RECURSION
+# This function calculates the total number of physical copies
+# available in the library using recursion.
+
+def calculate_total_copies(book_ids=None):
+
+    # Convert dictionary keys into a list.
+    if book_ids is None:
+        book_ids = list(books.keys())
+
+    # BASE CASE:
+    # If no book IDs are left, return 0.
+    # This condition stops the recursion.
+    if len(book_ids) == 0:
+        return 0
+
+    # Take the first Book ID from the list.
+    book_id = book_ids[0]
+
+    # Get the total copies of that book.
+    copies = books[book_id][2]
+
+    # RECURSIVE CASE:
+    # Calculate copies of the remaining books.
+    remaining_copies = calculate_total_copies(book_ids[1:])
+
+    # Add current book copies to remaining copies.
+    return copies + remaining_copies
+# TEMPORARY TESTING
+total = calculate_total_copies()
+
+print("\nTotal Copies in Library:", total)
+
+
