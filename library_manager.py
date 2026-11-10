@@ -460,11 +460,74 @@ def load_data():
         return False
 
 
-print("Testing save function...")
 
-result = save_data()
 
-print("Save function result:", result)
+
+
+
+# FEATURE 8: MAIN MENU
+# This function connects all library features.
+# It allows the librarian to operate the system through a menu.
+
+def main():
+
+    # Load previously saved data when the program starts.
+    load_data()
+
+    # Keep displaying the menu until the user exits.
+    while True:
+
+        print("\n========== LIBRARY BOOK MANAGER ==========")
+        print("1. Add a Book")
+        print("2. Issue a Book")
+        print("3. Return a Book")
+        print("4. Search Books")
+        print("5. Display Complete Catalogue")
+        print("6. Calculate Total Library Copies")
+        print("7. Save Library Data")
+        print("8. Exit")
+        print("==========================================")
+
+        # Taking the user's choice.
+        choice = input("Enter your choice (1-8): ").strip()
+
+        # Execute the selected feature.
+        if choice == "1":
+            add_book()
+
+        elif choice == "2":
+            issue_book()
+
+        elif choice == "3":
+            return_book()
+
+        elif choice == "4":
+            search_book()
+
+        elif choice == "5":
+            display_catalogue()
+
+        elif choice == "6":
+            total = calculate_total_copies()
+            print("Total Copies in Library:", total)
+
+        elif choice == "7":
+            save_data()
+
+        elif choice == "8":
+            # Save all changes before exiting.
+            save_data()
+            print("Thank you for using Library Book Manager!")
+            break
+
+        else:
+            print("Invalid choice! Please enter a number between 1 and 8.")
+
+
+# Start the program.
+if __name__ == "__main__":
+    main()
+
 
 
 
