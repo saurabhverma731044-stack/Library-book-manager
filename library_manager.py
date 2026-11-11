@@ -76,6 +76,9 @@ def calculate_issued(book_id):
 # This function allows the librarian to add a new book
 # to the library by entering its ID, title, author and copies.
 
+
+# FEATURE 10A: ADD A NEW BOOK WITH INPUT VALIDATION
+
 def add_book():
 
     print("\n----- ADD NEW BOOK -----")
@@ -83,37 +86,39 @@ def add_book():
     # Taking the unique Book ID from the user.
     book_id = input("Enter Book ID: ").strip().upper()
 
-    # Checking whether this Book ID already exists.
-    # Every book must have a unique ID.
+    # Check whether Book ID is empty.
+    if book_id == "":
+        print("Book ID cannot be empty!")
+        return False
+
+    # Check whether Book ID already exists.
     if book_id in books:
         print("This Book ID already exists!")
-        return
+        return False
 
-    # Taking the remaining book details.
+    # Taking book title and author name.
     title = input("Enter Book Title: ").strip()
     author = input("Enter Author Name: ").strip()
 
-    # Converting the number of copies into an integer.
+    # Check whether title or author is empty.
+    if title == "" or author == "":
+        print("Book title and author cannot be empty!")
+        return False
+
+    # Taking number of copies.
     try:
         copies = int(input("Enter Number of Copies: "))
 
-        # A book must have at least one copy.
+        # Copies must be positive.
         if copies <= 0:
             print("Number of copies must be greater than zero!")
-            return
+            return False
 
     except ValueError:
         print("Invalid input! Please enter a valid number.")
-        return
+        return False
 
-    # Checking that title and author are not empty.
-    if title == "" or author == "":
-        print("Book title and author cannot be empty!")
-        return
-
-    # Adding the new book to the dictionary.
-    # Book ID becomes the key.
-    # Book details are stored together as a tuple.
+    # Add the new book to the dictionary.
     books[book_id] = (title, author, copies)
 
     print("\nBook added successfully!")
@@ -486,6 +491,7 @@ def load_data():
 # This function connects all library features.
 # It allows the librarian to operate the system through a menu.
 
+
 def main():
 
     # Load previously saved data when the program starts.
@@ -493,6 +499,7 @@ def main():
 
     # Keep displaying the menu until the user exits.
     while True:
+
 
         print("\n========== LIBRARY BOOK MANAGER ==========")
         print("1. Add a Book")
