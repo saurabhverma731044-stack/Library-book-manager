@@ -4,6 +4,7 @@ A102|October Junction|Divyapraksash Dubey|5
 B101|Python Programming|Ajay Sonkar|10
 B102|Linear Algebra|Abhinav Mishra|9
 C101|The Alchemist|Paulo Coelho|4
+C102|The Psychology of Money|Morgan Housel|3
 ISSUED
 A101
 B101
