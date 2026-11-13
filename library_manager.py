@@ -19,22 +19,7 @@ issue_records=["A101","B101","A101"]
 issued_book_ids=set(issue_records)
 
 
-# Calculating available copies 
 
-book_id = "B101"
-
-# total = books[book_id][2]
-# issued = issue_records.count(book_id)
-# available = total - issued
-
-# print("Book:", books[book_id][0])
-# print("Total Copies:", total)
-# print("Issued Copies:", issued)
-# print("Available Copies:", available)
-
-#showing the issued books
-
-# print("Currently issued books :", issued_book_ids)
 
 
 def calculate_available(book_id):
@@ -105,6 +90,11 @@ def add_book():
         print("Book title and author cannot be empty!")
         return False
 
+    # Prevent the file separator from appearing in book details.
+    if "|" in book_id or "|" in title or "|" in author:
+        print("Book ID, title and author cannot contain '|'.")
+        return False
+
     # Taking number of copies.
     try:
         copies = int(input("Enter Number of Copies: "))
@@ -143,7 +133,7 @@ def issue_book():
     # Taking the Book ID from the user.
     book_id = input("Enter Book ID to issue: ").strip().upper()
 
-        # Check whether Book ID is empty.
+    # Check whether Book ID is empty.
     if book_id == "":
         print("Book ID cannot be empty!")
         return False
