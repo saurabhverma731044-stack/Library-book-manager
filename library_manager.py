@@ -55,6 +55,17 @@ def calculate_issued(book_id):
     return issued
 
 
+# HELPER FUNCTION 1: VALIDATE BOOK ID
+# Checks whether the given Book ID exists in the library.
+
+def is_valid_book_id(book_id):
+
+    if book_id in books:
+        return True
+
+    return False
+
+
 
 
 # FEATURE 1: ADD A NEW BOOK
@@ -139,7 +150,7 @@ def issue_book():
         return False
 
     # Step 1: Check whether the Book ID exists.
-    if book_id not in books:
+    if not is_valid_book_id(book_id):
         print("Book ID does not exist!")
         return False
 
@@ -187,7 +198,7 @@ def return_book():
         return False
 
     # Step 1: Check whether the Book ID exists.
-    if book_id not in books:
+    if not is_valid_book_id(book_id):
         print("Book ID does not exist!")
         return False
 
