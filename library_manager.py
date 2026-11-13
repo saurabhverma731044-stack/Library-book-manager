@@ -67,6 +67,38 @@ def is_valid_book_id(book_id):
 
 
 
+# HELPER FUNCTION 2: FIND BOOKS
+# Searches books by title or author and returns matching records.
+
+def find_books(keyword):
+
+    results = []
+
+    keyword = keyword.strip().lower()
+
+    for book_id, details in books.items():
+
+        title = details[0]
+        author = details[1]
+
+        if keyword in title.lower() or keyword in author.lower():
+
+            results.append((book_id, details))
+
+    return results
+
+# HELPER FUNCTION 3: FORMAT BOOK RECORD
+# Converts book details into a formatted string for file storage.
+
+def format_book_record(book_id, details):
+
+    title = details[0]
+    author = details[1]
+    copies = details[2]
+
+    return f"{book_id}|{title}|{author}|{copies}"
+
+
 
 # FEATURE 1: ADD A NEW BOOK
 # This function allows the librarian to add a new book
@@ -241,21 +273,27 @@ def search_book():
         print("Search keyword cannot be empty!")
         return []
 
+    #### since i had added function for searching a book 
+    #### that's why i am commenting out this code
+
     # This list will store all matching books.
-    results = []
+    # results = []
 
-    # Traversing through the complete books dictionary.
-    for book_id, details in books.items():
+    # # Traversing through the complete books dictionary.
+    # for book_id, details in books.items():
 
-        # Extracting title and author from the tuple.
-        title = details[0]
-        author = details[1]
+    #     # Extracting title and author from the tuple.
+    #     title = details[0]
+    #     author = details[1]
 
-        # Checking whether keyword exists in title or author.
-        if keyword in title.lower() or keyword in author.lower():
+    #     # Checking whether keyword exists in title or author.
+    #     if keyword in title.lower() or keyword in author.lower():
 
-            # Storing matching book details.
-            results.append((book_id, details))
+    #         # Storing matching book details.
+    #         results.append((book_id, details))
+
+        # Find matching books using the helper function.
+    results = find_books(keyword)
 
     # Displaying the search results.
     if len(results) == 0:
@@ -380,12 +418,11 @@ def save_data():
 
             for book_id, details in books.items():
 
-                title = details[0]
-                author = details[1]
-                copies = details[2]
+                # Format book details using the helper function.
+                record = format_book_record(book_id, details)
 
-                # Store each book in one line.
-                file.write(f"{book_id}|{title}|{author}|{copies}\n")
+                # Store the formatted record in the file.
+                file.write(record + "\n")
 
             # Second section: Save issued book records.
             file.write("ISSUED\n")
