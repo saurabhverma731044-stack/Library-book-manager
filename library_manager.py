@@ -143,10 +143,17 @@ def issue_book():
     # Taking the Book ID from the user.
     book_id = input("Enter Book ID to issue: ").strip().upper()
 
+        # Check whether Book ID is empty.
+    if book_id == "":
+        print("Book ID cannot be empty!")
+        return False
+
     # Step 1: Check whether the Book ID exists.
     if book_id not in books:
         print("Book ID does not exist!")
         return False
+
+    
 
     # Step 2: Calculate how many copies are available.
     available = calculate_available(book_id)
@@ -184,6 +191,10 @@ def return_book():
 
     # Taking the Book ID from the user.
     book_id = input("Enter Book ID to return: ").strip().upper()
+    # Check whether Book ID is empty.
+    if book_id == "":
+        print("Book ID cannot be empty!")
+        return False
 
     # Step 1: Check whether the Book ID exists.
     if book_id not in books:
@@ -406,6 +417,9 @@ def load_data():
 
             section = ""
 
+            books_section_found = False
+            issued_section_found = False
+
             # Read the file one line at a time.
             for line in file:
 
@@ -417,12 +431,20 @@ def load_data():
 
                 # Identify the BOOKS section.
                 if line == "BOOKS":
+                    if books_section_found:
+                        raise ValueError("Duplicate BOOKS section.")
+
                     section = "books"
+                    books_section_found = True
                     continue
 
                 # Identify the ISSUED section.
                 if line == "ISSUED":
+                    if issued_section_found:
+                        raise ValueError("Duplicate ISSUED section.")
+
                     section = "issued"
+                    issued_section_found = True
                     continue
 
                 # Load book details.
@@ -438,7 +460,10 @@ def load_data():
                     author = details[2]
                     copies = int(details[3])
 
-                    if book_id in loaded_books or copies <= 0:
+                    # Validate Book ID, title, author and copies.
+                    if (book_id == "" or title == "" or author == ""
+                            or book_id in loaded_books or copies <= 0):
+
                         raise ValueError("Invalid book information in file.")
 
                     loaded_books[book_id] = (title, author, copies)
@@ -453,6 +478,10 @@ def load_data():
 
                 else:
                     raise ValueError("Invalid file format.")
+
+        # Both sections must exist in the data file.
+        if not books_section_found or not issued_section_found:
+            raise ValueError("Required sections are missing.")
 
         # Check that issued copies do not exceed total copies.
         for book_id in loaded_books:
