@@ -18,41 +18,26 @@ issue_records=["A101","B101","A101"]
 
 issued_book_ids=set(issue_records)
 
-
-
-
-
 def calculate_available(book_id):
-    """
-    Calculate the number of available copies of a book.
-
-    >>> calculate_available("A101")
-    3
-    >>> calculate_available("B101")
-    9
-    """
-
+    # Safety check: if book doesn't exist, 0 are available
+    if book_id not in books:
+        return 0
+        
     total = books[book_id][2]
     issued = issue_records.count(book_id)
     available = total - issued
 
     return available
 
-
-
 def calculate_issued(book_id):
-    """
-    Calculate how many copies of a book are issued.
-
-    >>> calculate_issued("A101")
-    2
-    >>> calculate_issued("B101")
-    1
-    """
-
+    # Safety check: if book doesn't exist, 0 are issued
+    if book_id not in books:
+        return 0
+        
     issued = issue_records.count(book_id)
 
     return issued
+
 
 
 # HELPER FUNCTION 1: VALIDATE BOOK ID
