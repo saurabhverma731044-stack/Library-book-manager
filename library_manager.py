@@ -1,17 +1,12 @@
-'''
-Library Book Manager - Group 2 Project
-Members: Prem Bhusawale, Dipt Kumar, Nitin Gupta, Saurabh Verma
-'''
+'''Library Book Manager - Group 2 Project
+Members: Prem Bhusawale, Dipt Kumar, Nitin Gupta, Saurabh Verma'''
 
 def clean_text(text):
-    '''Cleans input text using string methods.'''
+    # Cleans input text using string methods
     return text.strip().title()
 
 def add_book(catalogue, b_id, title, author, copies):
-    '''
-    Adds a new book to the catalogue.
-    The fixed details (title, author) are stored as a tuple.
-    '''
+    # Adds a new book to the catalogue. The fixed details (title, author) are stored as a tuple.'''
     b_id = b_id.strip().upper()
     title = clean_text(title)
     author = clean_text(author)
@@ -37,7 +32,7 @@ def issue_book(catalogue, issued_set, b_id):
     return False
 
 def return_book(catalogue, issued_set, b_id):
-    '''Returns an issued book and updates the issued set.'''
+    # Returns an issued book and updates the issued set
     if b_id in catalogue and b_id in issued_set:
         if catalogue[b_id]['available'] < catalogue[b_id]['total']:
             catalogue[b_id]['available'] += 1
@@ -48,7 +43,7 @@ def return_book(catalogue, issued_set, b_id):
     return False
 
 def search_books(catalogue, query):
-    '''Searches for a book by title or author.'''
+    # Searches for a book by title or author
     query = query.strip().lower()
     results = []
     for b_id, data in catalogue.items():
@@ -58,14 +53,14 @@ def search_books(catalogue, query):
     return results
 
 def get_total_copies(catalogue):
-    '''Counts total copies held by the library using a simple loop.'''
+    # Counts total copies held by the library using a simple loop
     total = 0
     for data in catalogue.values():
         total += data['total']
     return total
 
 def display_catalogue(catalogue):
-    '''Displays the catalogue using nested loops, grouped by author.'''
+    # Displays the catalogue using nested loops, grouped by author
     authors = {}
     for b_id, data in catalogue.items():
         author = data['details'][1]
@@ -85,7 +80,7 @@ def display_catalogue(catalogue):
     print("-" * 65)
 
 def main():
-    '''Main menu driven loop without exception handling or file I/O.'''
+    # Main menu driven loop without exception handling or file I/O
     catalogue = {}
     issued_set = set()
 
