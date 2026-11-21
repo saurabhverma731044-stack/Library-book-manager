@@ -6,13 +6,18 @@ def clean_text(text):
     return text.strip().title()
 
 def add_book(catalogue, b_id, title, author, copies):
-    # Adds a new book to the catalogue. The fixed details (title, author) are stored as a tuple.'''
+    '''
+    Adds a new book to the catalogue, or adds more copies if the Book ID already exists.
+    The fixed details (title, author) are stored as a tuple.
+    '''
     b_id = b_id.strip().upper()
     title = clean_text(title)
     author = clean_text(author)
 
     if b_id in catalogue:
-        return False
+        catalogue[b_id]['total'] += copies
+        catalogue[b_id]['available'] += copies
+        return "updated"
 
     # Dictionary storing fixed details as a tuple
     catalogue[b_id] = {
@@ -20,7 +25,7 @@ def add_book(catalogue, b_id, title, author, copies):
         'total': copies,
         'available': copies
     }
-    return True
+    return "added"
 
 def issue_book(catalogue, issued_set, b_id):
     '''Issues a book if available and updates the issued set.'''
@@ -90,7 +95,7 @@ def main():
 
     while True:
         print("\n=== Library Book Manager ===")
-        print("1. Add Book")
+        print("1. Add Book / Add Copies")
         print("2. Issue Book")
         print("3. Return Book")
         print("4. Search Book")
@@ -101,25 +106,40 @@ def main():
         choice = input("Enter choice (1-7): ").strip()
 
         if choice == '1':
-            b_id = input("Enter Book ID (e.g., B003): ").strip()
-            title = input("Enter Title: ").strip()
-            author = input("Enter Author: ").strip()
-            copies = input("Enter Number of Copies: ").strip()
-
-            if not b_id or not title or not author:
-                print("Error: Book ID, Title, and Author cannot be empty.")
+            b_id = input("Enter Book ID (e.g., B003): ").strip().upper()
+            if not b_id:
+                print("Error: Book ID cannot be empty.")
                 continue
 
-            # Simple manual check instead of try-except
-            if not copies.isdigit() or int(copies) <= 0:
-                print("Error: Copies must be a positive integer.")
-                continue
+            if b_id in catalogue:
+                title, author = catalogue[b_id]['details']
+                print(f"Book already exists: '{title}' by {author}.")
+                copies = input("Enter Number of Copies to Add: ").strip()
 
-            if add_book(catalogue, b_id, title, author, int(copies)):
-                print("Book added successfully.")
+                # Simple manual check instead of try-except
+                if not copies.isdigit() or int(copies) <= 0:
+                    print("Error: Copies must be a positive integer.")
+                    continue
+
+                add_book(catalogue, b_id, title, author, int(copies))
+                print("Additional copies added successfully.")
             else:
-                print("Error: A book with this ID already exists.")
+                title = input("Enter Title: ").strip()
+                author = input("Enter Author: ").strip()
+                copies = input("Enter Number of Copies: ").strip()
 
+                if not title or not author:
+                    print("Error: Title and Author cannot be empty.")
+                    continue
+
+                # Simple manual check instead of try-except
+                if not copies.isdigit() or int(copies) <= 0:
+                    print("Error: Copies must be a positive integer.")
+                    continue
+
+                add_book(catalogue, b_id, title, author, int(copies))
+                print("Book added successfully.")
+                
         elif choice == '2':
             b_id = input("Enter Book ID to issue: ").strip().upper()
             if issue_book(catalogue, issued_set, b_id):
