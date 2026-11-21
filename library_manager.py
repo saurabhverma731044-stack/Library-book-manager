@@ -26,6 +26,12 @@ def add_book(catalogue, b_id, title, author, copies):
         'available': copies
     }
     return "added"
+# This function adds a new book or increases the stock of an existing one.
+#If b_id is already in the
+# catalogue, both total and available counts are increased by copies and the
+# function returns "updated". Otherwise, it creates a new dictionary entry
+# storing (title, author) as an immutable tuple alongside total and available
+# copy counts, then returns "added".
 
 def issue_book(catalogue, issued_set, b_id):
     '''Issues a book if available and updates the issued set.'''
@@ -35,6 +41,11 @@ def issue_book(catalogue, issued_set, b_id):
             issued_set.add(b_id)  # Using a set for quick lookup/unique records
             return True
     return False
+# This function handles lending out a single copy of a book. It checks that
+# b_id exists in the catalogue and that at least one copy is currently
+# available. When both conditions pass, it reduces available by 1, records b_id
+# in issued_set (a set avoids duplicate IDs and gives fast membership checks),
+# and returns True; otherwise it returns False.
 
 def return_book(catalogue, issued_set, b_id):
     # Returns an issued book and updates the issued set
@@ -46,6 +57,12 @@ def return_book(catalogue, issued_set, b_id):
                 issued_set.remove(b_id)
             return True
     return False
+# This function processes a book return. It verifies that b_id is in both the
+# catalogue and issued_set, and checks available < total so returned copies
+# never exceed total stock. After incrementing available by 1, it removes b_id
+# from issued_set only when all copies are back on the shelf, then returns
+# True; if the book was not issued or the ID is invalid, it returns False.
+
 
 def search_books(catalogue, query):
     # Searches for a book by title or author
@@ -56,6 +73,12 @@ def search_books(catalogue, query):
         if query in title.lower() or query in author.lower():
             results.append((b_id, title, author, data['available']))
     return results
+# This function finds books matching a title or author keyword. Converting
+# query, title, and author to lowercase makes the search case-insensitive.
+# The loop unpacks the stored (title, author) tuple for each entry and appends
+# a tuple of (b_id, title, author, available) to results whenever the query
+# appears in either field.
+
 
 def get_total_copies(catalogue):
     # Counts total copies held by the library using a simple loop
@@ -63,6 +86,11 @@ def get_total_copies(catalogue):
     for data in catalogue.values():
         total += data['total']
     return total
+# This function calculates the total number of book copies owned by the
+# library. It initializes total to 0 and iterates over catalogue.values(),
+# adding each book's total copy count in a simple loop before returning the
+# final sum.
+
 
 def display_catalogue(catalogue):
     # Displays the catalogue using nested loops, grouped by author
@@ -83,6 +111,12 @@ def display_catalogue(catalogue):
         for b_id, title, avail, total in authors[author]:
             print(f"  {b_id:<6} | {title:<30} | {avail}/{total}")
     print("-" * 65)
+# This function prints the full catalogue grouped alphabetically by author.
+# The first loop builds a temporary authors dictionary mapping each author
+# name to a list of their books. Next, f-string width specifiers (:<8, :<30)
+# and dashed lines print a clean table header. Finally, nested loops iterate
+# through sorted(authors.keys()) in the outer loop and each author's book
+# list in the inner loop to display aligned ID, title, and avail/total columns.
 
 def main():
     # Main menu driven loop without exception handling or file I/O
@@ -104,6 +138,9 @@ def main():
         print("7. Exit")
 
         choice = input("Enter choice (1-7): ").strip()
+ # This while True loop keeps the menu active until the user chooses to
+        # exit. Printing the numbered options and calling strip() on choice
+        # prevents leading or trailing spaces from causing an invalid choice.
 
         if choice == '1':
             b_id = input("Enter Book ID (e.g., B003): ").strip().upper()
@@ -139,7 +176,7 @@ def main():
 
                 add_book(catalogue, b_id, title, author, int(copies))
                 print("Book added successfully.")
-                
+
         elif choice == '2':
             b_id = input("Enter Book ID to issue: ").strip().upper()
             if issue_book(catalogue, issued_set, b_id):
@@ -186,3 +223,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+# This standard Python guard ensures main() runs automatically only when the
+# script is executed directly, preventing it from running if the file is
+# imported elsewhere.
