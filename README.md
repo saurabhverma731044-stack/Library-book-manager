@@ -41,14 +41,14 @@ A menu-driven command-line application built in Python for managing a library's 
    - Increments the available count and removes the ID from `issued_set` once all copies are back in stock.
 4. **Search Book**
    - Performs case-insensitive, partial-match searches across both book titles and author names.
-5. **Display Full Catalogue**
+5. **Display Full Library Data**
    - Groups all books alphabetically by author and displays them in a clean, aligned table showing `ID`, `Title`, and `Avail/Total` copies.
 6. **Show Total Library Capacity**
-   - Calculates and displays the total number of physical book copies across the entire catalogue.
+   - Library Data and displays the total number of physical book copies across the entire lab_data.
 
 ---
 
-## Pre-loaded Catalogue
+## Pre-loaded lab_data
 
 To make testing immediate, the application initializes with two sample books on startup:
 
@@ -88,13 +88,13 @@ When launched, the program presents an interactive menu:
 2. Issue Book
 3. Return Book
 4. Search Book
-5. Display Full Catalogue
+5. Display Full Library Data
 6. Show Total Library Capacity
 7. Exit
 Enter choice (1-7):
 ```
 
-### Example: Displaying the Catalogue (Option 5)
+### Example: Displaying the lab_data (Option 5)
 ```text
 -----------------------------------------------------------------
 ID       | Title                          | Avail/Total
@@ -120,9 +120,9 @@ ID: B002, Title: Python Programming, Author: John Zelle, Available: 3
 
 The program uses three core Python data structures to manage state efficiently in memory:
 
-1. **`catalogue` (Dictionary):** Maps each unique `b_id` to a nested dictionary containing immutable book metadata and inventory counts.
+1. **`lab_data` (Dictionary):** Maps each unique `b_id` to a nested dictionary containing immutable book metadata and inventory counts.
    ```python
-   catalogue = {
+   lab_data = {
        "B001": {
            "details": ("Atomic Habits", "James Clear"),  # Tuple: (title, author)
            "total": 5,
@@ -140,12 +140,12 @@ The program uses three core Python data structures to manage state efficiently i
 | Function | Parameters | Returns | Description |
 | :--- | :--- | :--- | :--- |
 | `clean_text` | `text` | `str` | Strips leading/trailing whitespace and converts text to Title Case. |
-| `add_book` | `catalogue, b_id, title, author, copies` | `bool` | Normalizes inputs and inserts a new book; returns `False` if `b_id` already exists. |
-| `issue_book` | `catalogue, issued_set, b_id` | `bool` | Decrements available copies and updates `issued_set`; returns `False` if unavailable or invalid. |
-| `return_book` | `catalogue, issued_set, b_id` | `bool` | Increments available copies and cleans up `issued_set` when all copies are returned. |
-| `search_books` | `catalogue, query` | `list` | Returns a list of `(b_id, title, author, available)` tuples matching the query. |
-| `get_total_copies` | `catalogue` | `int` | Iterates through the catalogue and sums the `total` copies of all books. |
-| `display_catalogue` | `catalogue` | `None` | Groups books by author and prints a formatted table using nested loops. |
+| `add_book` | `lab_data, b_id, title, author, copies` | `bool` | Normalizes inputs and inserts a new book; returns `False` if `b_id` already exists. |
+| `issue_book` | `lab_data, issued_set, b_id` | `bool` | Decrements available copies and updates `issued_set`; returns `False` if unavailable or invalid. |
+| `return_book` | `lab_data, issued_set, b_id` | `bool` | Increments available copies and cleans up `issued_set` when all copies are returned. |
+| `search_books` | `lab_data, query` | `list` | Returns a list of `(b_id, title, author, available)` tuples matching the query. |
+| `get_total_copies` | `lab_data` | `int` | Iterates through the lab_data and sums the `total` copies of all books. |
+| `display_library_data` | `lab_data` | `None` | Groups books by author and prints a formatted table using nested loops. |
 | `main` | *None* | `None` | Initializes data, runs the CLI menu loop, and handles user input/validation. |
 
 ---
@@ -155,7 +155,7 @@ The program uses three core Python data structures to manage state efficiently i
 The application handles invalid user input gracefully using manual checks (without `try-except` blocks):
 - **Empty Fields:** Rejects blank Book IDs, titles, authors, or search queries.
 - **Invalid Copy Counts:** Ensures the number of copies is a positive integer using `.isdigit()` and `int(copies) > 0`.
-- **Duplicate IDs:** Prevents adding a book with an ID that already exists in `catalogue`.
+- **Duplicate IDs:** Prevents adding a book with an ID that already exists in `lab_data`.
 - **Over-Issuing / Over-Returning:** Blocks issuing when `available == 0` and blocks returning when all copies are already in stock or the ID is not in `issued_set`.
 - **Case Sensitivity:** Automatically standardizes Book IDs to uppercase and searches in lowercase so user casing doesn't cause mismatches.
 
@@ -163,7 +163,7 @@ The application handles invalid user input gracefully using manual checks (witho
 
 ## Limitations
 
-- **No Persistent Storage:** All changes are stored in memory only. Exiting the program resets the catalogue to the two pre-loaded books.
+- **No Persistent Storage:** All changes are stored in memory only. Exiting the program resets the lab_data to the two pre-loaded books.
 - **No Borrower Tracking:** The system tracks *which* books are issued, but not *who* borrowed them or when they are due.
 - **Single-Session CLI:** Designed for single-user, local terminal use.
 
@@ -171,7 +171,7 @@ The application handles invalid user input gracefully using manual checks (witho
 
 ## Future Enhancements
 
-- **File Persistence:** Save and load the catalogue using JSON or CSV files so data persists across sessions.
+- **File Persistence:** Save and load the lab_data using JSON or CSV files so data persists across sessions.
 - **Member Management:** Track borrower names, member IDs, issue dates, and due dates with overdue fine calculations.
 - **Book Removal & Editing:** Add menu options to delete books or update copy counts.
 - **Exception Handling:** Introduce `try-except` blocks for more robust error handling when adding file I/O.
