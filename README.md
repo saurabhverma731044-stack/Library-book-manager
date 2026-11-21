@@ -20,10 +20,10 @@ A menu-driven command-line application built in Python for managing a library's 
 
 ## Team Members
 **Group 2**
-- **Prem Bhusawale**
-- **Dipt Kumar**
-- **Nitin Gupta**
 - **Saurabh Verma**
+- **Dipt Kumar**
+- **Prem Bhusawale**
+- **Nitin Gupta**
 
 ---
 
