@@ -1,162 +1,121 @@
 # Library Book Manager
 
-A menu-driven command-line application built in Python for managing a library's book inventory, adding stock to existing titles, tracking issued and returned copies, and searching records. Developed as **Group 2's Project**, this application demonstrates core Python programming concepts—dictionaries, tuples, sets, string methods, nested loops, and manual input validation—without relying on external libraries, exception handling (`try-except`), recursion, or file I/O.
+A menu-driven command-line Python application for managing a library's book inventory, issuing and returning copies, searching records, tracking total stock capacity, and persisting data between sessions in a plain-text file.
 
-## Team Members
+Built as **Group 2's Python Project** using only the Python 3 standard library—no external dependencies required.
 
-**Group 2**
+Repository: [saurabhverma731044-stack/Library-book-manager](https://github.com/saurabhverma731044-stack/Library-book-manager)
 
-- **Prem Bhusawale** (`@bhusawaleprem1-debug`)
-- **Dipt Kumar** (`@Diptkumar`)
-- **Nitin Gupta** (`@ni3guptaa`)
-- **Saurabh Verma** (`@saurabhverma731044-stack`)
+## Team Members (Group 2)
+
+| Name | GitHub Handle |
+| :--- | :--- |
+| Prem Bhusawale | `@bhusawaleprem1-debug` |
+| Dipt Kumar | `@Diptkumar` |
+| Nitin Gupta | `@ni3guptaa` |
+| Saurabh Verma | `@saurabhverma731044-stack` |
 
 ## Features
 
-1. **Add Book / Add Copies**
-   - Adds a new book to `lab_data` with a unique Book ID, title, author, and copy count.
-   - Automatically normalizes Book IDs to uppercase and formats titles and authors in Title Case.
-   - Supports restocking existing titles: entering an existing Book ID displays the current title and author and adds the new copies to both `total` and `available` counts.
-2. **Issue Book**
-   - Checks whether the requested Book ID exists in `lab_data` and has at least one available copy.
-   - Decrements the `available` count by 1 and records the Book ID in `issued_set`.
-3. **Return Book**
-   - Verifies that the book exists in `lab_data`, is present in `issued_set`, and has fewer available copies than total copies.
-   - Increments the `available` count by 1 and removes the ID from `issued_set` once all copies are back in stock.
-4. **Search Book**
-   - Performs case-insensitive, partial-match searches across both book titles and author names.
-5. **Display Full library Data**
-   - Groups all books alphabetically by author and prints an aligned table showing `ID`, `Title`, and `Avail/Total` copies using nested loops.
-6. **Show Total Library Capacity**
-   - Iterates through `lab_data` and displays the total number of physical book copies held by the library.
+* **Add Book / Add Copies**: Register new books with a unique Book ID, title, author, and copy count, or add extra copies to an existing Book ID. Book IDs are normalized to uppercase and titles/authors to Title Case.
+* **Issue Book**: Lend out a single copy of a book if the ID exists and at least one copy is available, decrementing the available count and recording the ID in `issued_set`.
+* **Return Book**: Process a returned copy for an issued book without exceeding total stock, removing the ID from `issued_set` once all copies are back on the shelf.
+* **Search Book**: Perform case-insensitive partial-match searches across both book titles and author names.
+* **Display Full Library Data**: Group all books alphabetically by author using nested loops and display an aligned summary table (`ID`, `Title`, `Avail/Total`).
+* **Show Total Library Capacity**: Compute and display the total number of book copies owned by the library across all records.
+* **Persistent File Storage**: Automatically load saved books and issued records from `library_data.txt` at startup and save the latest state back to `library_data.txt` on exit.
 
-## Pre-loaded Library Data
+## Project Structure
 
-To ensure `lab_data` is not empty at startup, two books are pre-loaded when the program launches:
-
-| Book ID | Title | Author | Available | Total Copies |
-| :--- | :--- | :--- | :---: | :---: |
-| `B001` | Atomic Habits | James Clear | 5 | 5 |
-| `B002` | Python Programming | John Zelle | 3 | 3 |
+| File | Description |
+| :--- | :--- |
+| [`library_manager.py`](https://github.com/saurabhverma731044-stack/Library-book-manager/blob/main/library_manager.py) | Main CLI application containing core inventory functions, file persistence, and the interactive menu loop. |
+| [`library_data.txt`](https://github.com/saurabhverma731044-stack/Library-book-manager/blob/main/library_data.txt) | Plain-text data store for saved book records (`BOOKS`) and currently issued Book IDs (`ISSUED`). |
+| [`README.md`](https://github.com/saurabhverma731044-stack/Library-book-manager/blob/main/README.md) | Project documentation, usage guide, and function reference. |
 
 ## Getting Started
 
 ### Prerequisites
 
-- **Python 3.x** (Uses only built-in Python features; no external packages required.)
+* Python 3.x installed on your system (no third-party packages needed).
 
-### Installation & Running
+### Installation and Running
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/saurabhverma731044-stack/Library-book-manager.git
-   ```
-2. Navigate into the project directory:
-   ```bash
-   cd Library-book-manager
-   ```
-3. Run the application:
-   ```bash
-   python library_manager.py
-   ```
-   *(On macOS/Linux, you may need to run `python3 library_manager.py`.)*
-
-## Usage & Sample Walkthrough
-
-Launching the script opens an interactive menu:
-
-```text
-=== Library Book Manager ===
-1. Add Book / Add Copies
-2. Issue Book
-3. Return Book
-4. Search Book
-5. Display Full library Data
-6. Show Total Library Capacity
-7. Exit
-Enter choice (1-7):
+```bash
+git clone https://github.com/saurabhverma731044-stack/Library-book-manager.git
+cd Library-book-manager
+python3 library_manager.py
 ```
 
-### Example: Adding Copies to an Existing Book (Option 1)
+On Windows, you may run `python library_manager.py` instead of `python3 library_manager.py`.
+
+## Interactive Menu
+
+The program presents seven menu options:
+
+| Option | Action |
+| :---: | :--- |
+| `1` | **Add Book / Add Copies** — Create a new entry or increase stock for an existing Book ID. |
+| `2` | **Issue Book** — Issue one available copy by Book ID. |
+| `3` | **Return Book** — Return one issued copy by Book ID. |
+| `4` | **Search Book** — Search books by title or author keyword. |
+| `5` | **Display Full library Data** — Print all books grouped alphabetically by author. |
+| `6` | **Show Total Library Capacity** — Display the sum of total copies across all books. |
+| `7` | **Exit** — Save current library data to `library_data.txt` and exit. |
+
+## Data Structures and Storage Format
+
+### In-Memory Structures
+
+* **`lab_data` (`dict`)**: Maps each uppercase Book ID to a dictionary containing an immutable `(title, author)` tuple and integer copy counts:
+  ```python
+  {
+      "B001": {
+          "details": ("Atomic Habits", "James Clear"),
+          "total": 5,
+          "available": 5
+      }
+  }
+  ```
+* **`issued_set` (`set`)**: Stores unique Book IDs that currently have at least one copy checked out for fast membership checks.
+
+### File Format (`library_data.txt`)
+
+Records are saved in UTF-8 plain text with two sections—`BOOKS` (pipe-delimited `ID|Title|Author|Total|Available`) and `ISSUED` (one sorted Book ID per line):
 
 ```text
-Enter Book ID (e.g., B003): b001
-Book already exists: 'Atomic Habits' by James Clear.
-Enter Number of Copies to Add: 2
-Additional copies added successfully.
+BOOKS
+B001|Atomic Habits|James Clear|5|5
+B002|Python Programming|John Zelle|3|3
+T001|Python Basics|Ajay Sonkar|4|4
+ISSUED
 ```
 
-### Example: Searching for a Book (Option 4)
+If `library_data.txt` is missing or unreadable on startup, `main()` initializes `lab_data` with two fallback entries:
 
-```text
-Enter title or author to search: python
-
-Search Results:
-ID: B002, Title: Python Programming, Author: John Zelle, Available: 3
-```
-
-### Example: Displaying the Full Library Data (Option 5)
-
-```text
------------------------------------------------------------------
-ID       | Title                          | Avail/Total
------------------------------------------------------------------
-Author: James Clear
-  B001   | Atomic Habits                  | 7/7
-Author: John Zelle
-  B002   | Python Programming             | 3/3
------------------------------------------------------------------
-```
-
-## Data Structures & Architecture
-
-The program manages library state in memory using three core Python data structures:
-
-1. **`lab_data` (`dict`)**: Maps each normalized uppercase `b_id` to a nested dictionary storing immutable book details and stock counts.
-   ```python
-   lab_data = {
-       "B001": {
-           "details": ("Atomic Habits", "James Clear"),  # Tuple: (title, author)
-           "total": 5,
-           "available": 5
-       }
-   }
-   ```
-2. **`details` (`tuple`)**: Stores `(title, author)` as an immutable pair since a book's core metadata stays fixed once added.
-3. **`issued_set` (`set`)**: Tracks unique Book IDs that currently have at least one copy checked out, providing fast membership checks during returns.
+| Book ID | Title | Author | Total Copies | Available |
+| :--- | :--- | :--- | :---: | :---: |
+| `B001` | Atomic Habits | James Clear | 5 | 5 |
+| `B002` | Python Programming | John Zelle | 3 | 3 |
 
 ## Function Reference
 
-| Function | Parameters | Returns | Description |
-| :--- | :--- | :--- | :--- |
-| `clean_text` | `text` | `str` | Strips surrounding whitespace and converts text to Title Case. |
-| `add_book` | `lab_data, b_id, title, author, copies` | `str` | Normalizes inputs; adds copies to an existing book and returns `"updated"`, or creates a new entry and returns `"added"`. |
-| `issue_book` | `lab_data, issued_set, b_id` | `bool` | Decrements `available` by 1 and adds `b_id` to `issued_set`; returns `False` if unavailable or invalid. |
-| `return_book` | `lab_data, issued_set, b_id` | `bool` | Increments `available` by 1 and removes `b_id` from `issued_set` when all copies are returned; returns `False` if not issued or invalid. |
-| `search_books` | `lab_data, query` | `list` | Performs a case-insensitive title/author search and returns matching `(b_id, title, author, available)` tuples. |
-| `get_total_copies` | `lab_data` | `int` | Loops over `lab_data.values()` and returns the total copy count across all books. |
-| `display_lab_data` | `lab_data` | `None` | Groups books alphabetically by author and prints a formatted 65-character-wide table using nested loops. |
-| `main` | *None* | `None` | Pre-loads starter books into `lab_data`, runs the menu loop, and validates all CLI inputs manually. |
+| Function | Parameters | Description |
+| :--- | :--- | :--- |
+| `clean_text` | `text` | Strips surrounding whitespace and converts text to Title Case. |
+| `add_book` | `lab_data, b_id, title, author, copies` | Adds a new book (`"added"`) or adds copies to an existing Book ID (`"updated"`). |
+| `issue_book` | `lab_data, issued_set, b_id` | Issues one copy if available, updates `issued_set`, and returns `True` or `False`. |
+| `return_book` | `lab_data, issued_set, b_id` | Returns one issued copy, removes the ID from `issued_set` when all copies are back, and returns `True` or `False`. |
+| `search_books` | `lab_data, query` | Returns a list of `(b_id, title, author, available)` tuples matching `query` in title or author. |
+| `get_total_copies` | `lab_data` | Sums and returns the total number of copies across all books in `lab_data`. |
+| `display_lab_data` | `lab_data` | Groups books by author and prints a formatted table sorted alphabetically by author. |
+| `save_data` | `lab_data, issued_set` | Writes `lab_data` and `issued_set` to `library_data.txt`; handles `OSError`. |
+| `load_data` | `lab_data, issued_set` | Reads `library_data.txt` into `lab_data` and `issued_set`; handles `FileNotFoundError`, `ValueError`, and `OSError`. |
+| `main` | *(none)* | Initializes state, loads saved or default books, and runs the interactive menu loop. |
 
-## Input Validation & Edge Cases
+## Core Python Concepts Demonstrated
 
-All user inputs are validated manually without `try-except` blocks:
-
-- **Empty Fields**: Rejects blank Book IDs, titles, authors, and search queries.
-- **Invalid Copy Counts**: Uses `.isdigit()` and `int(copies) > 0` to ensure copy counts are positive integers.
-- **Existing Book IDs**: Entering an existing Book ID in Option 1 switches to add-copies mode, preserving the original title and author while increasing `total` and `available` stock.
-- **Over-Issuing & Over-Returning**: Blocks issuing when `available == 0` and blocks returning when `b_id` is not in `issued_set` or `available == total`.
-- **Case Normalization**: Standardizes Book IDs to uppercase, titles/authors to Title Case, and search queries to lowercase so casing differences do not cause mismatches.
-
-## Limitations
-
-- **In-Memory Storage Only**: `library_manager.py` does not perform file I/O; exiting the program resets `lab_data` to the two pre-loaded books.
-- **No Borrower Tracking**: Tracks which Book IDs have copies checked out, but not borrower names or due dates.
-- **Single-Session CLI**: Designed for local, single-user terminal execution.
-
-## Future Enhancements
-
-- **Persistent Storage**: Save and load library data using JSON, CSV, or text files so inventory changes persist across sessions.
-- **Member & Due-Date Tracking**: Record borrower details, issue dates, due dates, and overdue fines.
-- **Book Removal & Editing**: Add menu options to remove titles, reduce copy counts, or edit metadata.
-- **Exception Handling**: Introduce `try-except` blocks when integrating file I/O or external data sources.
+* **Data Structures**: Nested dictionaries, immutable tuples for fixed book metadata, and sets for unique issued-book tracking.
+* **String Processing**: `.strip()`, `.upper()`, `.lower()`, `.title()`, `.split("|")`, and f-string column alignment.
+* **Control Flow**: Menu-driven `while True` loop, nested `for` loops for author-grouped display, and manual positive-integer validation with `.isdigit()`.
+* **File I/O and Exception Handling**: Reading and writing UTF-8 text files via `with open(...)` and catching `FileNotFoundError`, `ValueError`, and `OSError`.
