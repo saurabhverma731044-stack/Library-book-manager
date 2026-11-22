@@ -119,7 +119,7 @@ def display_lab_data(lab_data):
 # list in the inner loop to display aligned ID, title, and avail/total columns.
 
 
-def save_data(catalogue, issued_set):
+def save_data(lab_data, issued_set):
 
     try:
 
@@ -127,7 +127,7 @@ def save_data(catalogue, issued_set):
 
             file.write("BOOKS\n")
 
-            for b_id, data in catalogue.items():
+            for b_id, data in lab_data.items():
 
                 title, author = data['details']
                 total = data['total']
@@ -151,9 +151,9 @@ def save_data(catalogue, issued_set):
 
 
     
-def load_data(catalogue, issued_set):
+def load_data(lab_data, issued_set):
 
-    loaded_catalogue = {}
+    loaded_lab_data = {}
     loaded_issued = set()
 
     section = ""
@@ -189,7 +189,7 @@ def load_data(catalogue, issued_set):
                     total = int(parts[3])
                     available = int(parts[4])
 
-                    loaded_catalogue[b_id] = {
+                    loaded_lab_data[b_id] = {
                         'details': (title, author),
                         'total': total,
                         'available': available
@@ -198,8 +198,8 @@ def load_data(catalogue, issued_set):
                 elif section == "issued":
                     loaded_issued.add(line)
 
-        catalogue.clear()
-        catalogue.update(loaded_catalogue)
+        lab_data.clear()
+        lab_data.update(loaded_lab_data)
 
         issued_set.clear()
         issued_set.update(loaded_issued)
