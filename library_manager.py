@@ -118,14 +118,116 @@ def display_catalogue(catalogue):
 # through sorted(authors.keys()) in the outer loop and each author's book
 # list in the inner loop to display aligned ID, title, and avail/total columns.
 
+
+def save_data(catalogue, issued_set):
+
+    try:
+
+        with open("library_data.txt", "w", encoding="utf-8") as file:
+
+            file.write("BOOKS\n")
+
+            for b_id, data in catalogue.items():
+
+                title, author = data['details']
+                total = data['total']
+                available = data['available']
+
+                record = f"{b_id}|{title}|{author}|{total}|{available}\n"
+
+                file.write(record)
+
+            file.write("ISSUED\n")
+
+            for b_id in sorted(issued_set):
+                file.write(b_id + "\n")
+
+        print("Library data saved successfully!")
+        return True
+
+    except OSError:
+        print("Error: Unable to save library data.")
+        return False
+
+
+    
+def load_data(catalogue, issued_set):
+
+    loaded_catalogue = {}
+    loaded_issued = set()
+
+    section = ""
+
+    try:
+        with open("library_data.txt", "r", encoding="utf-8") as file:
+
+            for line in file:
+
+                line = line.strip()
+
+                if line == "":
+                    continue
+
+                if line == "BOOKS":
+                    section = "books"
+                    continue
+
+                if line == "ISSUED":
+                    section = "issued"
+                    continue
+
+                if section == "books":
+
+                    parts = line.split("|")
+
+                    if len(parts) != 5:
+                        raise ValueError
+
+                    b_id = parts[0]
+                    title = parts[1]
+                    author = parts[2]
+                    total = int(parts[3])
+                    available = int(parts[4])
+
+                    loaded_catalogue[b_id] = {
+                        'details': (title, author),
+                        'total': total,
+                        'available': available
+                    }
+
+                elif section == "issued":
+                    loaded_issued.add(line)
+
+        catalogue.clear()
+        catalogue.update(loaded_catalogue)
+
+        issued_set.clear()
+        issued_set.update(loaded_issued)
+
+        print("Library data loaded successfully!")
+        return True
+
+    except FileNotFoundError:
+        print("No saved data found.")
+        return False
+
+    except (ValueError, OSError):
+        print("Error: Unable to load valid library data.")
+        return False
+
+
 def main():
     # Main menu driven loop without exception handling or file I/O
     catalogue = {}
     issued_set = set()
 
+    loaded = load_data(catalogue, issued_set)
+
+    if not loaded:
+
     # Pre-loaded books so the catalogue is not empty at startup
-    add_book(catalogue, "B001", "Atomic Habits", "James Clear", 5)
-    add_book(catalogue, "B002", "Python Programming", "John Zelle", 3)
+        add_book(catalogue, "B001", "Atomic Habits", "James Clear", 5)
+        add_book(catalogue, "B002", "Python Programming", "John Zelle", 3)
 
     while True:
         print("\n=== Library Book Manager ===")
@@ -216,6 +318,7 @@ def main():
             print(f"Total copies of all books in library: {total}")
 
         elif choice == '7':
+            save_data(catalogue, issued_set)
             print("Exiting program.")
             break
         else:
