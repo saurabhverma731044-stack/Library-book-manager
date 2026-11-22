@@ -5,22 +5,22 @@ def clean_text(text):
     # Cleans input text using string methods
     return text.strip().title()
 
-def add_book(catalogue, b_id, title, author, copies):
+def add_book(lab_data, b_id, title, author, copies):
     '''
-    Adds a new book to the catalogue, or adds more copies if the Book ID already exists.
+    Adds a new book to the lab_data, or adds more copies if the Book ID already exists.
     The fixed details (title, author) are stored as a tuple.
     '''
     b_id = b_id.strip().upper()
     title = clean_text(title)
     author = clean_text(author)
 
-    if b_id in catalogue:
-        catalogue[b_id]['total'] += copies
-        catalogue[b_id]['available'] += copies
+    if b_id in lab_data:
+        lab_data[b_id]['total'] += copies
+        lab_data[b_id]['available'] += copies
         return "updated"
 
     # Dictionary storing fixed details as a tuple
-    catalogue[b_id] = {
+    lab_data[b_id] = {
         'details': (title, author),
         'total': copies,
         'available': copies
@@ -28,47 +28,47 @@ def add_book(catalogue, b_id, title, author, copies):
     return "added"
 # This function adds a new book or increases the stock of an existing one.
 #If b_id is already in the
-# catalogue, both total and available counts are increased by copies and the
+# lab_data, both total and available counts are increased by copies and the
 # function returns "updated". Otherwise, it creates a new dictionary entry
 # storing (title, author) as an immutable tuple alongside total and available
 # copy counts, then returns "added".
 
-def issue_book(catalogue, issued_set, b_id):
+def issue_book(lab_data, issued_set, b_id):
     '''Issues a book if available and updates the issued set.'''
-    if b_id in catalogue:
-        if catalogue[b_id]['available'] > 0:
-            catalogue[b_id]['available'] -= 1
+    if b_id in lab_data:
+        if lab_data[b_id]['available'] > 0:
+            lab_data[b_id]['available'] -= 1
             issued_set.add(b_id)  # Using a set for quick lookup/unique records
             return True
     return False
 # This function handles lending out a single copy of a book. It checks that
-# b_id exists in the catalogue and that at least one copy is currently
+# b_id exists in the lab_data and that at least one copy is currently
 # available. When both conditions pass, it reduces available by 1, records b_id
 # in issued_set (a set avoids duplicate IDs and gives fast membership checks),
 # and returns True; otherwise it returns False.
 
-def return_book(catalogue, issued_set, b_id):
+def return_book(lab_data, issued_set, b_id):
     # Returns an issued book and updates the issued set
-    if b_id in catalogue and b_id in issued_set:
-        if catalogue[b_id]['available'] < catalogue[b_id]['total']:
-            catalogue[b_id]['available'] += 1
+    if b_id in lab_data and b_id in issued_set:
+        if lab_data[b_id]['available'] < lab_data[b_id]['total']:
+            lab_data[b_id]['available'] += 1
             # Remove from issued_set only when all copies are returned
-            if catalogue[b_id]['available'] == catalogue[b_id]['total']:
+            if lab_data[b_id]['available'] == lab_data[b_id]['total']:
                 issued_set.remove(b_id)
             return True
     return False
 # This function processes a book return. It verifies that b_id is in both the
-# catalogue and issued_set, and checks available < total so returned copies
+# lab_data and issued_set, and checks available < total so returned copies
 # never exceed total stock. After incrementing available by 1, it removes b_id
 # from issued_set only when all copies are back on the shelf, then returns
 # True; if the book was not issued or the ID is invalid, it returns False.
 
 
-def search_books(catalogue, query):
+def search_books(lab_data, query):
     # Searches for a book by title or author
     query = query.strip().lower()
     results = []
-    for b_id, data in catalogue.items():
+    for b_id, data in lab_data.items():
         title, author = data['details']
         if query in title.lower() or query in author.lower():
             results.append((b_id, title, author, data['available']))
@@ -80,22 +80,22 @@ def search_books(catalogue, query):
 # appears in either field.
 
 
-def get_total_copies(catalogue):
+def get_total_copies(lab_data):
     # Counts total copies held by the library using a simple loop
     total = 0
-    for data in catalogue.values():
+    for data in lab_data.values():
         total += data['total']
     return total
 # This function calculates the total number of book copies owned by the
-# library. It initializes total to 0 and iterates over catalogue.values(),
+# library. It initializes total to 0 and iterates over lab_data.values(),
 # adding each book's total copy count in a simple loop before returning the
 # final sum.
 
 
-def display_catalogue(catalogue):
-    # Displays the catalogue using nested loops, grouped by author
+def display_lab_data(lab_data):
+    # Displays the lab_data using nested loops, grouped by author
     authors = {}
-    for b_id, data in catalogue.items():
+    for b_id, data in lab_data.items():
         author = data['details'][1]
         if author not in authors:
             authors[author] = []
@@ -111,7 +111,7 @@ def display_catalogue(catalogue):
         for b_id, title, avail, total in authors[author]:
             print(f"  {b_id:<6} | {title:<30} | {avail}/{total}")
     print("-" * 65)
-# This function prints the full catalogue grouped alphabetically by author.
+# This function prints the full lab_data grouped alphabetically by author.
 # The first loop builds a temporary authors dictionary mapping each author
 # name to a list of their books. Next, f-string width specifiers (:<8, :<30)
 # and dashed lines print a clean table header. Finally, nested loops iterate
@@ -218,16 +218,20 @@ def load_data(catalogue, issued_set):
 
 def main():
     # Main menu driven loop without exception handling or file I/O
-    catalogue = {}
+    lab_data = {}
     issued_set = set()
 
-    loaded = load_data(catalogue, issued_set)
+
+    loaded = load_data(lab_data, issued_set)
 
     if not loaded:
 
-    # Pre-loaded books so the catalogue is not empty at startup
-        add_book(catalogue, "B001", "Atomic Habits", "James Clear", 5)
-        add_book(catalogue, "B002", "Python Programming", "John Zelle", 3)
+    
+
+    # Pre-loaded books so the lab_data is not empty at startup
+        add_book(lab_data, "B001", "Atomic Habits", "James Clear", 5)
+        add_book(lab_data, "B002", "Python Programming", "John Zelle", 3)
+
 
     while True:
         print("\n=== Library Book Manager ===")
@@ -235,7 +239,7 @@ def main():
         print("2. Issue Book")
         print("3. Return Book")
         print("4. Search Book")
-        print("5. Display Full Catalogue")
+        print("5. Display Full library Data")
         print("6. Show Total Library Capacity")
         print("7. Exit")
 
@@ -250,8 +254,8 @@ def main():
                 print("Error: Book ID cannot be empty.")
                 continue
 
-            if b_id in catalogue:
-                title, author = catalogue[b_id]['details']
+            if b_id in lab_data:
+                title, author = lab_data[b_id]['details']
                 print(f"Book already exists: '{title}' by {author}.")
                 copies = input("Enter Number of Copies to Add: ").strip()
 
@@ -260,7 +264,7 @@ def main():
                     print("Error: Copies must be a positive integer.")
                     continue
 
-                add_book(catalogue, b_id, title, author, int(copies))
+                add_book(lab_data, b_id, title, author, int(copies))
                 print("Additional copies added successfully.")
             else:
                 title = input("Enter Title: ").strip()
@@ -276,19 +280,19 @@ def main():
                     print("Error: Copies must be a positive integer.")
                     continue
 
-                add_book(catalogue, b_id, title, author, int(copies))
+                add_book(lab_data, b_id, title, author, int(copies))
                 print("Book added successfully.")
 
         elif choice == '2':
             b_id = input("Enter Book ID to issue: ").strip().upper()
-            if issue_book(catalogue, issued_set, b_id):
+            if issue_book(lab_data, issued_set, b_id):
                 print("Book issued successfully.")
             else:
                 print("Error: Book not available or invalid ID.")
 
         elif choice == '3':
             b_id = input("Enter Book ID to return: ").strip().upper()
-            if return_book(catalogue, issued_set, b_id):
+            if return_book(lab_data, issued_set, b_id):
                 print("Book returned successfully.")
             else:
                 print("Error: Book not issued or invalid ID.")
@@ -299,7 +303,7 @@ def main():
                 print("Error: Search query cannot be empty.")
                 continue
 
-            results = search_books(catalogue, query)
+            results = search_books(lab_data, query)
             if results:
                 print("\nSearch Results:")
                 for b_id, title, author, avail in results:
@@ -308,17 +312,17 @@ def main():
                 print("No books found matching your query.")
 
         elif choice == '5':
-            if not catalogue:
-                print("Catalogue is empty.")
+            if not lab_data:
+                print("Library data is empty.")
             else:
-                display_catalogue(catalogue)
+                display_lab_data(lab_data)
 
         elif choice == '6':
-            total = get_total_copies(catalogue)
+            total = get_total_copies(lab_data)
             print(f"Total copies of all books in library: {total}")
 
         elif choice == '7':
-            save_data(catalogue, issued_set)
+            save_data(lab_data, issued_set)
             print("Exiting program.")
             break
         else:
